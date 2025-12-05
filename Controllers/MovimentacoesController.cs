@@ -65,38 +65,18 @@ namespace MvcEcocycle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MovimentacoesId,ColaboradoresId,Qtdmovimentada,Data,UsuarioId")] Movimentacoes movimentacoes)
         {
-            // TODO: Adicione aqui a lógica de setar o UsuarioId da Movimentação se for necessário.
-
-            // 1. VERIFICAR A VALIDADE DO MODELO (TUDO DEVE ESTAR AQUI DENTRO)
             if (ModelState.IsValid)
             {
-                // 2. LOCALIZAR O COLABORADOR AFETADO
-                var colaborador = await _context.Colaboradores
-                    .FirstOrDefaultAsync(c => c.ColaboradoresId == movimentacoes.ColaboradoresId);
-
-                if (colaborador != null)
-                {
-                    // 3. ATUALIZAR O CAMPO QTD
-                    // Se Qtd for int? (nullable), use o operador ?? 0 para tratar o null.
-                    colaborador.Qtd = (colaborador.Qtd ?? 0) + movimentacoes.Qtdmovimentada;
-
-                    // O EF Core rastreia a alteração no objeto 'colaborador'.
-                }
-                else
-                {
-                    // Opcional: Adicionar um erro de modelo se o colaborador não for encontrado
-                    ModelState.AddModelError("", "O colaborador selecionado não foi encontrado.");
-                    // Se isso ocorrer, o código vai para o bloco final "return View(movimentacoes)"
-                }
-
-                // 4. ADICIONAR E SALVAR (Movimentação e Atualização do Colaborador)
                 _context.Add(movimentacoes);
                 await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
-                ViewData["UsuarioId"] = new SelectList(_context.Users, "Id", "Id", movimentacoes.UsuarioId);
-                return View(movimentacoes);
             }
+
+            return RedirectToAction(nameof(Index));
+            ViewData["UsuarioId"] = new SelectList(_context.Users, "Id", "Id", movimentacoes.UsuarioId);
+            return View(movimentacoes);
+        }
+
 
         // GET: Movimentacoes/Edit/5
         public async Task<IActionResult> Edit(int? id)

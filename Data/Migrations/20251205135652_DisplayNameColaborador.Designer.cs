@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcEcocycle.Data;
 
@@ -11,9 +12,11 @@ using MvcEcocycle.Data;
 namespace MvcEcocycle.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251205135652_DisplayNameColaborador")]
+    partial class DisplayNameColaborador
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,7 +258,10 @@ namespace MvcEcocycle.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MovimentacoesId"));
 
-                    b.Property<int?>("ColaboradoresId")
+                    b.Property<string>("ColaboradoresId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ColaboradoresId1")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Data")
@@ -269,7 +275,7 @@ namespace MvcEcocycle.Data.Migrations
 
                     b.HasKey("MovimentacoesId");
 
-                    b.HasIndex("ColaboradoresId");
+                    b.HasIndex("ColaboradoresId1");
 
                     b.HasIndex("UsuarioId");
 
@@ -331,7 +337,7 @@ namespace MvcEcocycle.Data.Migrations
                 {
                     b.HasOne("MvcEcocycle.Models.Colaboradores", "Colaboradores")
                         .WithMany()
-                        .HasForeignKey("ColaboradoresId");
+                        .HasForeignKey("ColaboradoresId1");
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
                         .WithMany()

@@ -2,27 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcEcocycle.Data;
 using MvcEcocycle.Models;
 
+
 namespace MvcEcocycle.Controllers
 {
     public class MovimentacoesController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public MovimentacoesController(ApplicationDbContext context)
+        private readonly UserManager<IdentityUser> _userManager;
+        public MovimentacoesController(ApplicationDbContext context,
+                                       UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Movimentacoes
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Movimentacoes.Include(m => m.Usuario);
+            var applicationDbContext = _context.Movimentacoes.Include(m => m.Usuario).Include(m => m.Colaboradores);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -67,13 +71,35 @@ namespace MvcEcocycle.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Define a data atual
+                movimentacoes.Data = DateTime.Now;
+
+                // Pega o ID do usuário logado
+                movimentacoes.UsuarioId = _userManager.GetUserId(User);
+
+                // Localiza o colaborador pelo ID vindo no formulário
+                var colaborador = await _context.Colaboradores
+                    .FirstOrDefaultAsync(c => c.ColaboradoresId == movimentacoes.ColaboradoresId);
+
+                if (colaborador == null)
+                {
+                    ModelState.AddModelError("", "Colaborador não encontrado.");
+                    return View(movimentacoes);
+                }
+
+                // Soma a quantidade movimentada ao total do colaborador
+                colaborador.Qtd += movimentacoes.Qtdmovimentada;
+
+                // Salva movimentação e atualização do colaborador
                 _context.Add(movimentacoes);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
 
-            return RedirectToAction(nameof(Index));
-            ViewData["UsuarioId"] = new SelectList(_context.Users, "Id", "Id", movimentacoes.UsuarioId);
+            ViewData["UsuarioId"] = new SelectList(_context.Users, "Id", "UserName", movimentacoes.UsuarioId);
+            ViewData["ColaboradoresId"] = new SelectList(_context.Colaboradores, "ColaboradoresId", "Nome", movimentacoes.ColaboradoresId);
+
             return View(movimentacoes);
         }
 

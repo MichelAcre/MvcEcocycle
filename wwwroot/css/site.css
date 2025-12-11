@@ -47,3 +47,7 @@ body {
         border-color: #129363;
         box-shadow: initial
     }
+
+    .Kgram:after {
+        content: "Kg";
+    }

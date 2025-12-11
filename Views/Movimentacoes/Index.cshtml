@@ -7,9 +7,9 @@
 <h1>Movimentações</h1>
 
 <p>
-	<a asp-action="Create">Criar Novo</a>
+	<a asp-action="Create" class="btn btn-custom">Criar Novo</a>
 </p>
-<table class="table">
+<table class="table table-striped table-bordered table-hover table-info" style="background-color: #394D37">
 	<thead>
 		<tr>
 			<th>
@@ -34,7 +34,7 @@
 				<td>
 					@Html.DisplayFor(modelItem => item.Colaboradores.Nome)
 				</td>
-				<td>
+				<td class="Kgram">
 					@Html.DisplayFor(modelItem => item.Qtdmovimentada)
 				</td>
 				<td>
@@ -44,9 +44,8 @@
 					@Html.DisplayFor(modelItem => item.Usuario.Email)
 				</td>
 				<td>
-					<a asp-action="Edit" asp-route-id="@item.MovimentacoesId">Editar</a> |
-					<a asp-action="Details" asp-route-id="@item.MovimentacoesId">Detalhes</a> |
-					<a asp-action="Delete" asp-route-id="@item.MovimentacoesId">Deletar</a>
+					<a asp-action="Edit" class="btn" style="background-color: #9EE5FF;" asp-route-id="@item.MovimentacoesId">Editar</a> |
+					<a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.MovimentacoesId">Deletar</a>
 				</td>
 			</tr>
 		}

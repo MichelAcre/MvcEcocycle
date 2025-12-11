@@ -21,7 +21,7 @@
 				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 					<ul class="navbar-nav flex-grow-1">
 						<li class="nav-item">
-							<a class="nav-link text-light mx-2 btn btn-custom" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+							<a class="nav-link text-light mx-2 btn btn-custom" asp-area="" asp-controller="Home" asp-action="Index">Início</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link text-light mx-2 btn btn-custom" asp-area="" asp-controller="Colaboradores" asp-action="Index">Colaboradores</a>
@@ -30,7 +30,7 @@
 							<a class="nav-link text-light mx-2 btn btn-custom" asp-area="" asp-controller="Movimentacoes" asp-action="Index">Movimentações</a>
 						</li>
 					</ul>
-					<partial name="_LoginPartial" />
+					<partial class="text-white" name="_LoginPartial" />
 				</div>
 			</div>
 		</nav>
@@ -41,9 +41,9 @@
 		</main>
 	</div>
 
-	<footer class="border-top footer text-muted">
+	<footer class="border-top border-success footer text-muted">
 		<div class="container">
-			&copy; 2025 - MvcEcocycle - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+			&copy; 2025 - MvcEcocycle - <a asp-area="" asp-controller="Home" asp-action="Home" class="text-success">Início</a>
 		</div>
 	</footer>
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>

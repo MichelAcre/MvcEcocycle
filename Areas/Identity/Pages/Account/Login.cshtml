@@ -2,53 +2,61 @@
 @model LoginModel
 
 @{
-	ViewData["Title"] = "Entrar";
+    ViewData["Title"] = "Entrar";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-	<div class="col-md-12">
-		<section>
-			<form id="account" method="post">
-				<h2>Use uma conta local para entrar.</h2>
-				<hr />
-				<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-				<div class="form-floating mb-3">
-					<input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-					<label asp-for="Input.Email" class="form-label">Email</label>
-					<span asp-validation-for="Input.Email" class="text-danger"></span>
-				</div>
-				<div class="form-floating mb-3">
-					<input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-					<label asp-for="Input.Password" class="form-label">Senha</label>
-					<span asp-validation-for="Input.Password" class="text-danger"></span>
-				</div>
-				<div class="checkbox mb-3">
-					<label asp-for="Input.RememberMe" class="form-label">
-						<input class="form-check-input" asp-for="Input.RememberMe" />
-						@Html.DisplayNameFor(m => m.Input.RememberMe)
-					</label>
-				</div>
-				<div>
-					<button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Entrar</button>
-				</div>
-				<div>
-					<p>
-						<a id="forgot-password" asp-page="./ForgotPassword">Esqueceu sua senha?</a>
-					</p>
-					<p>
-						<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Registrar um novo usuário</a>
-					</p>
-					<p>
-						<a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Reenviar confirmação de email</a>
-					</p>
-				</div>
-			</form>
-		</section>
-	</div>
+<style>
+    body {
+        background-image: url('/img/forest.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+</style>
+
+<div id="card_container" class="card mx-auto mt-5">
+    <div class="card-body">
+        <div class="text-center">
+            <form id="account" method="post">
+                <h2><span style="color: #0dff5d">Eco</span><span style="color: #9ee5ff">Cycle</span></h2>
+                <hr id="ecocycle_hr" class="col-6 mx-auto mt-0 mb-0" />
+                <p class="fw-semibold fs-4 mt-0 mb-0">Cuidar do planeta é<br />nosso ciclo</p>
+                <p class="mt-0 mb-0 fw-semibold fs-5">Entrar com conta</p>
+                <p>Insira seu email e senha para acessar o app</p>
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <label asp-for="Input.Email" class="form-label">Email</label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                    <label asp-for="Input.Password" class="form-label">Password</label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="text-start">
+                    <a id="forgot-password" asp-page="./ForgotPassword" class="text-decoration-underline text-secondary me-3">Esqueci minha senha</a>
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-decoration-underline text-secondary">Criar conta</a>
+                </div>
+                <div>
+                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-dark mt-2 mb-2">Entrar</button>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <hr class="col-5 text-secondary" /><p class="text-secondary ms-4 me-4 py-1"> ou </p><hr class="col-5 text-secondary" />
+                </div>
+            </form>
+            <div id="connection_buttons" class="text-center">
+                <button class="btn btn-lg btn-secondary text-light w-100" style="color:#EEEEEE;"><i class="bi bi-google"></i> Continuar com Google</button>
+                <br /><br />
+                <button class="btn btn-lg btn-secondary text-light w-100" style="color:#EEEEEE;"><i class="bi bi-apple"></i> Continuar com Apple</button>
+            </div>
+            <p class="mt-4 mb-0">Clicando em continuar, você aceita nossos <b>Termos de Serviço</b> e <b>Política de Privacidade</b></p>
+        </div>
+    </div>
 
 </div>
 
 @section Scripts {
-	<partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -1,0 +1,379 @@
+@model MvcEcocycle.Models.Dashboard
+
+@{
+    ViewData["Title"] = "Dashboard - EcoCycle";
+}
+
+<!-- Google Charts -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<style>
+    body {
+        background-color: #DEF2FF;
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+        padding: 30px 0;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .dashboard-header h1 {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+    .kpi-card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #2ecc71;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+    .kpi-valor {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2ecc71;
+        margin: 10px 0;
+    }
+
+    .kpi-label {
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .chart-container {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-header {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+        .table thead {
+            background-color: #f3f4f6;
+        }
+
+            .table thead th {
+                border-bottom: 2px solid #e5e7eb;
+                font-weight: 600;
+                color: #374151;
+                padding: 12px;
+            }
+
+        .table tbody td {
+            padding: 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 20px;
+        margin-top: 30px;
+    }
+
+        .section-title:first-child {
+            margin-top: 0;
+        }
+
+    .badge-movimentacao {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .colaborador-rank {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .rank-numero {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: #2ecc71;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+    }
+</style>
+
+<!-- Header -->
+<div class="dashboard-header">
+    <div class="container-fluid">
+        <h1><i class="bi bi-bar-chart-fill"></i> Dashboard EcoCycle</h1>
+        <p>Visão geral de colaboradores e movimentações de lixo</p>
+    </div>
+</div>
+
+<!-- Conteúdo Principal -->
+<div class="container-fluid">
+
+    <!-- KPIs -->
+    <div class="section-title">Indicadores Principais</div>
+    <div class="row">
+        <div class="col-md-6 col-lg-3">
+            <div class="kpi-card">
+                <div class="kpi-label">Total de Colaboradores</div>
+                <div class="kpi-valor">@Model.TotalColaboradores</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="kpi-card">
+                <div class="kpi-label">Total de Movimentações</div>
+                <div class="kpi-valor">@Model.TotalMovimentacoes</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="kpi-card">
+                <div class="kpi-label">Quantidade Total Movimentada</div>
+                <div class="kpi-valor">@Model.QuantidadeTotalMovimentada <span style="font-size: 16px;">kg</span></div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="kpi-card">
+                <div class="kpi-label">Média por Colaborador</div>
+                <div class="kpi-valor">@Model.MediaMovimentacaoPorColaborador <span style="font-size: 16px;">kg</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="section-title">Análise de Dados</div>
+    <div class="row">
+        <!-- Gráfico de Movimentações por Dia -->
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <div class="chart-title"><i class="bi bi-graph-up"></i> Movimentações por Dia</div>
+                <div id="chart_movimentacoes_dia" style="width: 100%; height: 300px;"></div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Top 5 Colaboradores -->
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <div class="chart-title"><i class="bi bi-trophy-fill"></i> Top 5 Colaboradores</div>
+                <div id="chart_top_colaboradores" style="width: 100%; height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabelas -->
+    <div class="section-title">Detalhes</div>
+
+    <!-- Top Colaboradores -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="table-container">
+                <div class="table-header"><i class="bi bi-trophy-fill"></i> Colaboradores com Maior Movimentação</div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Posição</th>
+                            <th>Nome</th>
+                            <th>Movimentações</th>
+                            <th>Total (kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int posicao = 1;
+                            foreach (var colab in Model.ColaboradoresComMaiorMovimentacao)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="rank-numero">@posicao</div>
+                                    </td>
+                                    <td>@colab.Nome</td>
+                                    <td><span class="badge-movimentacao">@colab.QuantidadeMovimentacoes</span></td>
+                                    <td><strong>@colab.QuantidadeTotal kg</strong></td>
+                                </tr>
+                                posicao++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Últimas Movimentações -->
+        <div class="col-lg-6">
+            <div class="table-container">
+                <div class="table-header"><i class="bi bi-stopwatch"></i> Últimas Movimentações</div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Colaborador</th>
+                            <th>Quantidade</th>
+                            <th>Data</th>
+                            <th>Usuário</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var mov in Model.UltimasMovimentacoes)
+                        {
+                            <tr>
+                                <td>@mov.Colaboradores?.Nome</td>
+                                <td><strong>@mov.Qtdmovimentada kg</strong></td>
+                                <td>@mov.Data.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@mov.Usuario?.UserName</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Todos os Colaboradores -->
+    <div class="section-title">Todos os Colaboradores</div>
+    <div class="table-container">
+        <div class="table-header"><i class="bi bi-card-list"></i> Lista Completa de Colaboradores</div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Quantidade Atual (kg)</th>
+                    <th>Movimentações</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var colab in Model.Colaboradores)
+                {
+                    var movimentacoesColab = Model.Movimentacoes.Where(m => m.ColaboradoresId == colab.ColaboradoresId).Count();
+                    <tr>
+                        <td>@colab.Nome</td>
+                        <td><strong>@(colab.Qtd ?? 0) kg</strong></td>
+                        <td><span class="badge-movimentacao">@movimentacoesColab</span></td>
+                        <td>
+                            <a href="@Url.Action("Details", "Colaboradores", new { id = colab.ColaboradoresId })"
+                               class="btn btn-sm btn-info">Ver Detalhes</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- Scripts Google Charts -->
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart', 'bar'] });
+    google.charts.setOnLoadCallback(desenharGraficos);
+
+    function desenharGraficos() {
+        desenharMovimentacoesPorDia();
+        desenharTopColaboradores();
+    }
+
+    // Gráfico de Movimentações por Dia
+    function desenharMovimentacoesPorDia() {
+        var dados = google.visualization.arrayToDataTable([
+            ['Data', 'Quantidade', 'Total (kg)'],
+    @foreach (var item in Model.MovimentacoesPorDia)
+    {
+        @:['@item.Data', @item.Quantidade, @item.QuantidadeMovimentada],
+    }
+        ]);
+
+        var opcoes = {
+            title: '',
+            curveType: 'function',
+            legend: { position: 'bottom' },
+            hAxis: {
+                title: 'Data'
+            },
+            vAxis: {
+                title: 'Quantidade'
+            },
+            colors: ['#2ecc71', '#27ae60']
+        };
+
+        var grafico = new google.visualization.LineChart(document.getElementById('chart_movimentacoes_dia'));
+        grafico.draw(dados, opcoes);
+    }
+
+    // Gráfico de Top Colaboradores
+    function desenharTopColaboradores() {
+        var dados = google.visualization.arrayToDataTable([
+            ['Colaborador', 'Total Movimentado (kg)', { role: 'style' }],
+    @foreach (var item in Model.ColaboradoresComMaiorMovimentacao)
+    {
+        @:['@Html.Raw(item.Nome)', @item.QuantidadeTotal, '#2ecc71'],
+    }
+        ]);
+
+        var opcoes = {
+            title: '',
+            legend: { position: 'none' },
+            hAxis: {
+                title: 'Colaborador'
+            },
+            vAxis: {
+                title: 'Quantidade (kg)'
+            },
+            bar: { groupWidth: '75%' }
+        };
+
+        var grafico = new google.visualization.ColumnChart(document.getElementById('chart_top_colaboradores'));
+        grafico.draw(dados, opcoes);
+    }
+
+    // Redimensionar gráficos quando a janela mudar
+    window.addEventListener('resize', function () {
+        desenharGraficos();
+    });
+</script>
